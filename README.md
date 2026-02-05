@@ -1,7 +1,6 @@
 AI Copilot ROI Calculator
 Live Demo: https://roi-calculator-9l9k.onrender.com/ 
 A production-ready React application that translates AI capabilities into CFO-ready business metrics. Built to help Directors justify AI adoption budgets by showing measurable ROI with industry-backed benchmarks.
-Show Image
 
 The Problem
 Support Directors want to adopt AI copilots but struggle to justify the investment to finance teams. They need to answer:
