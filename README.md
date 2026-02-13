@@ -1,353 +1,266 @@
-AI Copilot ROI Calculator
-Live Demo: https://roi-calculator-9l9k.onrender.com/ 
-A production-ready React application that translates AI capabilities into CFO-ready business metrics. Built to help Directors justify AI adoption budgets by showing measurable ROI with industry-backed benchmarks.
+# Block 7: AI ROI Calculator
 
-The Problem
-Support Directors want to adopt AI copilots but struggle to justify the investment to finance teams. They need to answer:
+**Live Demo:** https://roi-calculator-9l9k.onrender.com  
+**Part of:** [AI PM Roadmap](https://github.com/cs-ai-pm-journey) - Block 7 of 18
 
-"How much will this actually save us?"
-"When do we break even?"
-"Can you prove the ROI?"
+A React-based ROI calculator that translates AI capabilities into CFO-ready business metrics. Built to solve a real problem: sales engineers need to prove AI value to executives, but most ROI claims are hand-waved estimates.
 
-Generic vendor claims ("30% efficiency gains!") aren't enough. CFOs need concrete numbers tied to their specific team size and workload.
+This calculator uses **real production cost data** from [Block 6](https://github.com/cs-ai-pm-journey/Block6) ($0.26/query, instrumented from live telemetry) to validate assumptions and generate credible 3-year ROI projections.
 
-💡 The Solution
-This calculator transforms AI capabilities into executive-ready financial analysis:
-✅ Real-time ROI calculations - Adjust inputs, see results instantly
-✅ Multi-variable modeling - Labor savings + quality improvements (FCR, escalations)
-✅ Industry benchmarks - Cites Forrester 2024 and Zendesk 2024 data
-✅ Visual storytelling - 3-year cumulative value chart showing break-even timeline
-✅ PDF export - Downloadable reports for executive presentations
-✅ Responsive design - Works on desktop, tablet, and mobile
-Result: Directors can model scenarios like "What if we deploy AI to 50 agents handling 10K tickets/month?" and get defensible answers in seconds.
+---
 
-Key Features
-1. Real-Time Calculations
+## **The Problem**
 
-10 configurable inputs (agent count, tickets, handle time, etc.)
-Instant recalculation as sliders move
-No page reloads, no waiting
+Product Managers and sales engineers struggle to articulate AI value in financial terms:
+- "Our AI reduces response time" → CFO asks: "By how much, and what's that worth?"
+- "This improves productivity" → CFO asks: "Show me the 3-year ROI."
+- Most ROI calculators use guessed assumptions → Stakeholders question credibility
 
-2. Comprehensive ROI Model
-Calculates:
+**The gap:** Technical capabilities ≠ Business value (unless you can translate between them)
 
-Annual labor savings (time reduction × hourly wage)
-Escalation cost savings (FCR improvement × escalation cost)
-AI operational costs (tickets × AI cost per ticket)
-Net annual savings
-Break-even timeline
-3-year cumulative value
+---
 
-3. Visual Impact
+## **The Solution**
 
-Hero metric: Annual Savings (large, impossible to miss)
-3-year chart: Line graph showing trajectory from implementation cost to profit
-Cost comparison: Before/after horizontal bars showing reduction
-Value breakdown: Transparent calculation showing where savings come from
+An interactive ROI calculator that:
+1. **Uses real production data** (Block 6 agent's $0.26/query cost from instrumented telemetry)
+2. **Translates AI metrics** (query cost, response time) into financial outcomes (labor savings, payback period)
+3. **Visualizes 3-year projections** (interactive Recharts line chart showing cumulative ROI)
+4. **Cites industry benchmarks** (Forrester 2024, Zendesk 2024) for validation
+5. **Enables sales teams** (customizable inputs for different team sizes and use cases)
 
-4. Credibility Features
+---
 
-Industry benchmark citations (Forrester 2024, Zendesk 2024)
-Conservative default assumptions (50% time reduction, not 80%)
-Helper text explaining each input
-Methodology notes in PDF export
+## **Key Features**
 
-5. Executive-Ready PDF Export
+### **Real-Time ROI Calculation**
+- Adjust sliders for team size, hours saved per week, hourly rate, AI tool cost
+- Calculator updates instantly (no page refresh)
+- See immediate impact of different assumptions
 
-2-page professional report
-Cover page with executive summary
-Detailed metrics tables
-Input assumptions (so CFO can verify)
-3-year projection
-Sources and methodology
+### **3-Year Cumulative ROI Visualization**
+- Interactive line chart (powered by Recharts)
+- Shows month-by-month ROI growth
+- Helps executives see long-term value, not just Year 1
 
+### **Industry-Backed Assumptions**
+- **Forrester 2024:** Competitive research takes 10 hours/week per analyst
+- **Zendesk 2024:** Average customer support analyst hourly rate benchmarks
+- **Block 6 Production Data:** $0.26/query cost (validated from real telemetry)
 
-Technical Stack
-LayerTechnologyWhy?FrontendReact 18 + ViteFast dev experience, modern toolingState ManagementCustom hooks (useState, useEffect)Lightweight, no over-engineeringStylingCSS ModulesScoped styles, no naming conflictsChartsRechartsDeclarative, responsive, industry standardPDF GenerationjsPDF + autoTableClient-side (no backend needed)DeploymentRender (Static Site)Free tier, auto-deploy from GitHub
+### **Customizable for Discovery Calls**
+- Sales engineers can plug in prospect-specific numbers
+- Generates CFO-ready talking points
+- Shows ROI across multiple scenarios (small team vs. large team)
 
-Architecture Decisions
-Why Custom Hook for State Management?
-Decision: Built useROICalculator custom hook instead of Redux/Zustand.
-Reasoning:
+---
 
-Calculator is single-page, single-user (no shared state across routes)
-All calculations are synchronous (no async complexity)
-Custom hook provides clean API: const { inputs, results, constants } = useROICalculator()
-Easier to test in isolation
+## **Tech Stack**
 
-Trade-off: If we added multi-user collaboration or saved scenarios, would reconsider global state.
+- **Frontend:** React
+- **Visualization:** Recharts (for 3-year ROI line chart)
+- **Deployment:** Render
+- **Data Source:** Block 6 production telemetry ($0.26/query cost)
 
-Why Client-Side PDF Generation?
-Decision: Used jsPDF instead of server-side PDF service.
-Reasoning:
+---
 
-Keeps architecture simple (no backend needed)
-Zero latency (generates instantly in browser)
-Zero server costs
-Works offline
+## **How It Works**
 
-Trade-off: Limited styling flexibility vs. HTML-to-PDF services. But for tabular data, jsPDF is sufficient.
+### **ROI Calculation Logic**
 
-Why Recharts Over D3?
-Decision: Recharts instead of D3.js for visualizations.
-Reasoning:
+```javascript
+// Monthly labor savings
+const monthlyLaborSavings = teamSize * hoursSavedPerWeek * 4.33 * avgHourlyRate;
 
-Declarative API (React-friendly)
-Responsive by default
-Lower learning curve
-Sufficient for line/bar charts
+// Monthly AI cost
+const monthlyAICost = aiToolCost;
 
-Trade-off: Less customization than D3. But for this use case (3-year line chart), Recharts handles it perfectly.
+// Monthly net savings
+const monthlyNetSavings = monthlyLaborSavings - monthlyAICost;
 
-🎨 Design System
-Built a custom design system with CSS variables for consistency:
-css/* Colors */
---color-primary: #2563eb (Blue - trust, professionalism)
---color-success: #10b981 (Green - savings, positive ROI)
---color-danger: #ef4444 (Red - costs, negative values)
+// Annual ROI
+const annualROI = (monthlyNetSavings * 12);
 
-/* Typography */
---font-body: 'Inter', sans-serif (readability)
---font-mono: 'Roboto Mono', monospace (numbers)
+// 3-year cumulative ROI (visualized in chart)
+for (let month = 0; month <= 36; month++) {
+  cumulativeROI += monthlyNetSavings;
+  chartData.push({ month, cumulativeROI });
+}
+```
 
-/* Spacing */
-8px base unit (consistent rhythm)
-Design Principles:
+### **Example Calculation**
 
-Hierarchy: Most important metric (Annual Savings) is 5× larger than secondary metrics
-Color coding: Green = savings, Red = costs (universal business convention)
-Progressive disclosure: Advanced metrics hidden by default (80% of users don't need them)
-Responsive: Mobile-first, works on 320px+ screens
+**Inputs:**
+- Team size: 50 people
+- Hours saved per week: 10 hours (per Forrester benchmark)
+- Average hourly rate: $45
+- AI tool cost: $2,080/year (Block 6 agent at $0.26/query × 8,000 queries/year)
 
+**Outputs:**
+- **Monthly labor savings:** $97,425 (50 × 10 × 4.33 × $45)
+- **Monthly AI cost:** $173 ($2,080 / 12)
+- **Monthly net savings:** $97,252
+- **Annual ROI:** $1,167,024
+- **3-year cumulative ROI:** $3,501,072
 
-Real-World Validation
-This calculator is backed by real production data from my Block 6 Competitive Intelligence Agent:
-Agent Cost: $0.26/query (7 queries tracked with cost logging)
+**ROI %:** 56,200% ($1.17M savings / $2,080 cost)
 
-GPT-4 Turbo: ~$0.01-0.03/query
-Embeddings: ~$0.0001/query
-Tavily Search: $0.25/search
+---
 
-Calculator Default: $0.04/ticket (conservative, based on 2,500 tokens × $0.01/1K)
-Result: Calculator assumptions are defensible with actual production telemetry.
+## **The Block 6 → Block 7 Connection**
 
-Example Scenario
-Inputs:
+This calculator doesn't use made-up numbers. It's validated by real production data:
 
-50 support agents
-10,000 tickets/month
-15-minute average handle time
-$30/hour fully loaded wage
-50% time reduction (AI-assisted)
-$0.04 AI cost per ticket
+**Block 6:** Built a competitive intelligence agent (hybrid RAG + ReAct)  
+**Instrumentation:** Added cost tracking middleware to log every API call  
+**Result:** $0.26/query average cost (measured across 7 live queries)  
+**Block 7:** Used that $0.26/query to calculate realistic AI tool costs for this calculator
 
-Outputs:
+**Why this matters:**
+- Most AI portfolios: "Assume costs are around $X"
+- This portfolio: "I measured costs in production and they're exactly $0.26/query"
+- Credibility = Real data > Guesses
 
-Annual Savings: $1,053,000
-AI Operational Cost: $2,080/year
-Net ROI: $1,050,920
-Break-Even: 0.5 months
-3-Year Value: $3,109,000
+---
 
-Translation: Invest $50K once, save $1M+ annually, break even in 2 weeks, create $3.1M in 3 years.
+## **What I Learned**
 
-🚀 Getting Started
-Prerequisites
+### **1. ROI Modeling is an AI PM Superpower**
+Most AI PMs focus on features. The ones who get executive buy-in translate features into P&L impact. This calculator proved I can speak both "tokens per second" AND "dollars saved per FTE."
 
-Node.js 18+
-npm or yarn
+### **2. Real Data Beats Assumptions**
+Using Block 6's actual $0.26/query cost made stakeholders trust the calculator. If I'd estimated "$0.30ish," they'd question everything. **Instrumentation matters.**
 
-Installation
-bash# Clone the repository
-git clone https://github.com/cs-ai-pm-journey/Block7
-cd roi-calculator
+### **3. AI PMs Must Enable Sales, Not Just Engineering**
+Building Block 6 (the agent) was the technical work. Building Block 7 (the calculator) was the go-to-market enablement. Both are critical PM skills.
+
+### **4. Systems Thinking Creates Compound Value**
+- Block 6 alone = "I built an AI agent"
+- Block 7 alone = "I built an ROI calculator"
+- **Block 6 + Block 7 = "I built an AI system, measured it, and proved it's worth $1.17M"**
+
+That's the story hiring managers remember.
+
+---
+
+## **Screenshots**
+
+### Calculator Interface
+![Default State](screenshots/calculator-default-state.png)
+
+### Real-Time Calculation
+![Calculator with Results](screenshots/calculator-with-results.png)
+
+### 3-Year ROI Visualization
+![ROI Chart](screenshots/three-year-roi-chart.png)
+
+---
+
+## **Setup & Installation**
+
+### **Prerequisites**
+- Node.js 16+
+- npm or yarn
+
+### **Local Development**
+
+```bash
+# Clone the repo
+git clone https://github.com/cs-ai-pm-journey/Block7.git
+cd Block7
 
 # Install dependencies
 npm install
 
-# Start development server
-npm run dev
-Open: http://localhost:5173
+# Run development server
+npm start
 
-Build & Deploy
-Build for Production
-bashnpm run build
-Creates optimized build in /dist folder.
-Preview Production Build
-bashnpm run preview
-Deploy to Render
+# Open browser to http://localhost:3000
+```
 
-Push to GitHub
-Connect repo to Render
-Set build command: npm run build
-Set publish directory: dist
-Deploy!
+### **Deployment**
 
+Deployed to Render with the following configuration:
+- Build Command: `npm install && npm run build`
+- Start Command: `serve -s build`
+- Environment: Node 18
 
-Testing Locally
-Test the calculator:
+---
 
-Adjust "Agent Count" slider → Numbers update instantly
-Drag "Time Reduction" slider → Chart redraws
-Click "Download PDF" → PDF downloads with current inputs
-Resize browser → Layout adapts responsively
+## **Project Structure**
 
-Expected behavior:
-
-All sliders functional ✅
-Chart shows 4 data points (Year 0, 1, 2, 3) ✅
-PDF contains 2 pages with tables ✅
-Mobile view stacks layout vertically ✅
-
-
-Project Structure
-roi-calculator/
+```
+Block7/
 ├── src/
 │   ├── components/
-│   │   ├── CalculatorForm.jsx          # Input sliders
-│   │   ├── CalculatorForm.module.css
-│   │   ├── ResultsDisplay.jsx          # Metrics + chart
-│   │   ├── ResultsDisplay.module.css
-│   │   ├── SavingsChart.jsx            # 3-year line chart
-│   │   └── SavingsChart.module.css
-│   ├── hooks/
-│   │   └── useROICalculator.js         # Business logic
-│   ├── styles/
-│   │   └── variables.css               # Design system
-│   ├── utils/
-│   │   └── pdfExport.js                # PDF generation
-│   ├── App.jsx                         # Main layout
-│   ├── App.css
-│   └── main.jsx                        # Entry point
-├── public/                             # Static assets
+│   │   └── ROICalculator.jsx    # Main calculator component
+│   ├── App.js                    # Root application
+│   └── index.js                  # Entry point
+├── public/
+│   └── index.html
 ├── package.json
-├── vite.config.js
 └── README.md
+```
 
-Learning Outcomes
-Building this project taught me:
-1. Product Thinking
+---
 
-Designed for "buyer ≠ user" (Director creates report, CFO reads it)
-Progressive disclosure (advanced metrics hidden by default)
-Credibility through transparency (show benchmark sources)
+## **Use Cases**
 
-2. Technical Skills
+### **For Sales Engineers:**
+Customize inputs during discovery calls to show prospect-specific ROI projections
 
-React hooks for state management
-CSS Modules for scoped styling
-Recharts integration for data visualization
-Client-side PDF generation
-Responsive design patterns
+### **For Product Managers:**
+Justify AI feature investments to leadership with credible financial projections
 
-3. Business Acumen
+### **For Executives:**
+See 3-year cumulative ROI to make budget decisions
 
-ROI modeling (labor savings + quality improvements)
-Industry research (citing Forrester, Zendesk)
-Executive communication (translate tech → dollars)
+### **For Portfolio Demonstration:**
+Proves ability to build production systems AND communicate their business value
 
+---
 
-Future Enhancements
-If I had more time, I'd add:
+## **Roadmap Context**
 
-Scenario Comparison
+This is Block 7 of an 18-block AI PM learning roadmap. Each block produces:
+- Working code (GitHub repos)
+- PM artifacts (PRDs, OKRs, ROI models)
+- Interview stories (STAR format)
 
-Save multiple scenarios
-Side-by-side comparison table
-"Optimistic vs Conservative" toggle
+**Completed Blocks:**
+- Block 1-5: AI fundamentals, embeddings, prompt engineering, fine-tuning, agents
+- **Block 6:** Competitive Intelligence Agent ([repo](https://github.com/cs-ai-pm-journey/Block6))
+- **Block 7:** ROI Calculator (this project)
 
+**Next Blocks:**
+- Block 8-9: Smart Reply Copilot + Sentiment Analysis
+- Block 10-12: A/B Testing, Planning Assistant, Dashboards
 
-Team Size Optimizer
+---
 
-Reverse calculator: "How many agents needed for $1M savings?"
-Break-even agent count
+## **Related Projects**
 
+- **Block 6:** [Competitive Intelligence Agent](https://github.com/cs-ai-pm-journey/Block6) - Provides the production cost data ($0.26/query) used in this calculator
 
-Integration Cost Model
+---
 
-Training time estimates
-Change management costs
-Maintenance fees
+## **Contact**
 
+**Adam Saulters**  
+- GitHub: [@asaulters](https://github.com/asaulters)
+- LinkedIn: [linkedin.com/in/adamsaulters](https://www.linkedin.com/in/adamsaulters)
+- Portfolio: [cs-ai-pm-journey](https://github.com/cs-ai-pm-journey)
 
-Chart Enhancements
+---
 
-Monthly break-even detail (not just year-level)
-Sensitivity analysis (tornado chart)
-Export chart as PNG
+## **License**
 
+MIT License - feel free to use this calculator for your own ROI modeling
 
-Backend (if scaling to multi-user)
+---
 
-Save scenarios to database
-Share URLs with specific inputs pre-filled
-Usage analytics (which inputs do users adjust most?)
+## **Acknowledgments**
 
-
-
-But: Shipping v1 beats perfecting features no one asked for. These are "nice to haves," not blockers.
-
-Known Issues & Limitations
-1. PDF Security Warning
-jsPDF v2.5.2 has known vulnerabilities (prototype pollution, ReDoS).
-Impact: Low (client-side only, no user-generated content)
-Mitigation: For production apps, would evaluate react-pdf or pdfmake
-Context: Acceptable for portfolio/demo projects
-2. Large Bundle Size
-Main JavaScript bundle is ~950KB (uncompressed).
-Cause: Recharts + jsPDF dependencies
-Impact: ~3s initial load on 3G
-Mitigation: Could code-split or lazy-load charts
-Decision: Acceptable for demo (most users on WiFi)
-3. No Persistence
-Inputs reset on page refresh.
-Why: No backend, no localStorage (intentional)
-Workaround: PDF export preserves state
-Future: Could add localStorage or URL params
-
-Resources & Citations
-Industry Benchmarks:
-
-Forrester 2024 Customer Service Report - AI performance metrics
-Zendesk 2024 Benchmark Data - Handle time averages
-
-Technical Documentation:
-
-Recharts Documentation
-jsPDF Documentation
-React Hooks Guide
-
-
-Contributing
-This is a portfolio project, but feedback is welcome!
-Found a bug? Open an issue
-Have a suggestion? Start a discussion
-Want to fork it? Go for it! (MIT License)
-
-📄 License
-MIT License - feel free to use this for your own projects!
-
-About Me
-Adam Saulters
-Account Manager → AI Product Manager
-I'm executing an 18-block learning roadmap to transition into AI-fluent Product Management. This ROI Calculator is Block 7 of 18.
-Other Projects:
-
-Block 6: Competitive Intelligence Agent - Hybrid RAG + ReAct system
-
-Connect:
-
-LinkedIn
-GitHub
-
-
-Acknowledgments
-Built with guidance from:
-
-
-Forrester Research (benchmark data)
-Zendesk (industry standards)
-
-
-Built in public. Shipping v1 > perfecting v0.
-Last updated: February 2026
+- **Forrester Research (2024):** Competitive intelligence time benchmarks
+- **Zendesk (2024):** Customer support analyst compensation data
+- **Block 6:** Production telemetry that validated calculator assumptions
